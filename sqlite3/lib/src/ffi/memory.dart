@@ -24,8 +24,7 @@ Pointer<Void> _freeImpl(Pointer<Void> ptr) {
 /// Pointer to a function that frees memory we allocated.
 ///
 /// This corresponds to `void(*)(void*)` arguments found in sqlite.
-final Pointer<NativeFunction<Pointer<Void> Function(Pointer<Void>)>>
-    freeFunctionPtr = Pointer.fromFunction(_freeImpl);
+final Pointer<NativeFunction<Pointer<Void> Function(Pointer<Void>)>> freeFunctionPtr = Pointer.fromFunction(_freeImpl);
 
 extension FreePointerExtension on Pointer {
   void free() => allocate.free(this);
@@ -58,7 +57,11 @@ extension Utf8Utils on Pointer<sqlite3_char> {
     final resolvedLength = length ??= _length;
     final dartList = cast<Uint8>().asTypedList(resolvedLength);
 
-    return utf8.decode(dartList);
+    try {
+      return utf8.decode(dartList);
+    } catch (e) {
+      return utf8.decode(dartList, allowMalformed: true);
+    }
   }
 
   static Pointer<sqlite3_char> allocateZeroTerminated(String string) {
