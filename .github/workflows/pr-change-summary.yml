@@ -1,0 +1,16 @@
+name: PR Change Summary & Code Review (OpenAI)
+
+on:
+  pull_request:
+    types: [opened, synchronize]
+
+jobs:
+  call-centralized-workflow:
+    uses: AurenderInc/.github/.github/workflows/pr-review-and-create-changes.yml@main
+    with:
+      pr_number: ${{ github.event.pull_request.number }}
+      pr_title: ${{ github.event.pull_request.title }}
+      pr_head_ref: ${{ github.head_ref }}
+      pr_base_ref: ${{ github.event.pull_request.base.ref }}
+      repo: ${{ github.repository }}
+    secrets: inherit
